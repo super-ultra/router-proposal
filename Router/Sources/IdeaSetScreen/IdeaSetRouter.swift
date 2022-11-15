@@ -6,6 +6,7 @@ enum IdeaSetDestination {
 
 protocol IdeaSetRouter {
     func route(to destination: IdeaSetDestination)
+    func routeActions(for destination: IdeaSetDestination) -> [NavigationAction]
 }
 
 final class IdeaSetRouterImpl: IdeaSetRouter {
@@ -15,15 +16,16 @@ final class IdeaSetRouterImpl: IdeaSetRouter {
     }
 
     func route(to destination: IdeaSetDestination) {
+        navigator.perform(routeActions(for: destination), animated: true)
+    }
+
+    func routeActions(for destination: IdeaSetDestination) -> [NavigationAction] {
         switch destination {
         case .colors(let next):
             let router = ColorSetRouterImpl(navigator: navigator)
             let view = ColorSetView.makeCreative(router: router)
-            self.navigator.push(view, animated: true)
 
-            if let next = next {
-                router.route(to: next)
-            }
+            return [.push(view)] + (next.map { router.routeActions(for: $0) } ?? [])
         }
     }
 

@@ -6,6 +6,7 @@ enum ColorSetDestination {
 
 protocol ColorSetRouter {
     func route(to destination: ColorSetDestination)
+    func routeActions(for destination: ColorSetDestination) -> [NavigationAction]
 }
 
 final class ColorSetRouterImpl: ColorSetRouter {
@@ -15,11 +16,14 @@ final class ColorSetRouterImpl: ColorSetRouter {
     }
 
     func route(to destination: ColorSetDestination) {
+        navigator.perform(routeActions(for: destination), animated: true)
+    }
+
+    func routeActions(for destination: ColorSetDestination) -> [NavigationAction] {
         switch destination {
         case .color(let color):
             let view = ColorView(color: color)
-            let vc = UIHostingController(rootView: view)
-            self.navigator.push(vc, animated: true)
+            return [.push(view)]
         }
     }
 
