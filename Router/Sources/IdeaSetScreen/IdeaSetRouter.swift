@@ -1,7 +1,7 @@
 import SwiftUI
 
 enum IdeaSetDestination {
-    case colors
+    case colors(next: ColorSetDestination? = nil)
 }
 
 protocol IdeaSetRouter {
@@ -16,10 +16,14 @@ final class IdeaSetRouterImpl: IdeaSetRouter {
 
     func route(to destination: IdeaSetDestination) {
         switch destination {
-        case .colors:
+        case .colors(let next):
             let router = ColorSetRouterImpl(navigator: navigator)
             let view = ColorSetView.makeCreative(router: router)
             self.navigator.push(view, animated: true)
+
+            if let next = next {
+                router.route(to: next)
+            }
         }
     }
 

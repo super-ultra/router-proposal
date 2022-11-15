@@ -20,6 +20,15 @@ final class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        setupRootViewController()
+    }
+
+    // MARK: - Private
+
+    private let rootNavigationController: UINavigationController
+    private let navigator: ViewControllerNavigator
+
+    private func setupRootViewController() {
         addChild(rootNavigationController)
         view.addSubview(rootNavigationController.view)
         rootNavigationController.view.frame = view.bounds
@@ -28,11 +37,6 @@ final class MainViewController: UIViewController {
 
         rootNavigationController.viewControllers = [makeRootScreen()]
     }
-
-    // MARK: - Private
-
-    private let rootNavigationController: UINavigationController
-    private let navigator: ViewControllerNavigator
 
     private func makeRootScreen() -> UIViewController {
         let router = IdeaSetRouterImpl(navigator: navigator)
